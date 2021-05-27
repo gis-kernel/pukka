@@ -73,6 +73,23 @@
       border-radius: 50%;
       cursor: pointer;
     }
+
+    .button {
+      background-color: #4CAF50;
+      /* Green */
+      border: none;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+
+    .button1 {
+      padding: 10px 24px;
+    }
   </style>
 </head>
 
@@ -83,9 +100,11 @@
     href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
     type="text/css">
   <div id="map">
-    <button id="startPointL" onclick="startPointL()" type="button" style="z-index:5; position:absolute">Take me to Start
+    <button id="startPointL" onclick="startPointL()" type="button" class="button button1"
+      style="z-index:5; position:absolute">Take me to Start
       Location!</button> </br> </br> </br> </br>
-    <button id="Start" onclick="journeyStart()" type="button" style="z-index:5; position:absolute">Start the
+    <button id="Start" onclick="journeyStart()" type="button" class="button button1"
+      style="z-index:5; position:absolute">Start the
       Journey!</button>
   </div>
 
@@ -230,7 +249,7 @@
             'Hotel Hamn i Senja' +
             '</p>'
             +
-            '<p><button type="button" onclick="bookHotel()">Click Me!</button></p>'
+            '<p><button type="button" onclick="bookHotel()">Book now!</button></p>'
           )
           .setMaxWidth(170)
       )
@@ -273,8 +292,11 @@
 
     function journeyStart() {
       map.addControl(directions, 'top-left');
+      var directionDiv = document.getElementsByClassName('directions-control directions-control-inputs')
+      directionDiv[0].style.display = 'none'
       directions.setOrigin([18.9602193, 69.6481466]);
       directions.setDestination([18.6253192, 69.6971024]);
+
     }
 
   </script>
