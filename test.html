@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Display driving directions</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .marker {
+      background-image: url('start.jpg');
+      background-size: cover;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .markerHotel {
+      background-image: url('hotel.jpg');
+      background-size: cover;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .markerHike1 {
+      background-image: url('hike1.png');
+      background-size: cover;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .markerHike2 {
+      background-image: url('hike2.jpg');
+      background-size: cover;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .markerFerry {
+      background-image: url('ferry.png');
+      background-size: cover;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .markerPOI {
+      background-image: url('poi.png');
+      background-size: cover;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <script
+    src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+  <link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
+    type="text/css">
+  <div id="map">
+    <button id="startPointL" onclick="startPointL()" type="button" style="z-index:5; position:absolute">Take me to Start
+      Location!</button> </br> </br> </br> </br>
+    <button id="Start" onclick="journeyStart()" type="button" style="z-index:5; position:absolute">Start the
+      Journey!</button>
+  </div>
+
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoicHVra2F0cmF2ZWxzIiwiYSI6ImNpdHk3Njd2bTAwNDIybms5MGVqdWN2ZTgifQ.Os31P4FPO8DMl7QTWMEa3A';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/pukkatravels/ckp5bh6cm0xch17k3b5hrloic',
+
+    });
+    map.addControl(new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+      trackUserLocation: true
+    }));
+
+    map.addControl(new mapboxgl.NavigationControl());
+
+
+    var el = document.createElement('div');
+    el.className = 'marker';
+
+    // start point
+    new mapboxgl.Marker(el)
+      .setLngLat([18.9602193, 69.6481466])
+      .setPopup(
+        new mapboxgl.Popup({ offset: 25 }) // add popups
+          .setHTML(
+            '<h3>' +
+            'You Start here!' +
+            '</h3><p>' +
+            'TROMSØ BASECAMP' +
+            '</p>'
+            +
+            '<p><img src=' + 'TROMSOBASECAMP.jpg' + '></img></p>' +
+            '<p><button type="button" onclick="journeyStart()">Start My Journey!</button></p>'
+          )
+          .setMaxWidth(170)
+      )
+      .addTo(map);
+
+
+
+
+    // POI
+    var elm = document.createElement('div');
+    elm.className = 'markerPOI';
+    var POI = new mapboxgl.Marker(elm).setLngLat([18.6253192, 69.6971024])
+      .setPopup(
+        new mapboxgl.Popup({ offset: 25 }) // add popups
+          .setHTML(
+            '<h3>' +
+            'Must Stop!' +
+            '</h3><p>' +
+            'It is must stop place, visit ERSFJORDBOTN' +
+            '</p>'
+            +
+            '<p><img src="ERSFJORDBOTN.jpg" style="width: 220px;"></p>'
+          )
+          .setMaxWidth(170)
+      )
+      .addTo(map);
+
+    // first hike
+    /* var hikeFirst = new mapboxgl.Marker({
+      color: "#FFFFFF",
+      draggable: true
+    }).setLngLat([18.0546663, 69.6042157])
+      .addTo(map); */
+
+    var elm2 = document.createElement('div');
+    elm2.className = 'markerHike1';
+    var hikeFirst = new mapboxgl.Marker(elm2).setLngLat([18.0546663, 69.6042157])
+      .setPopup(
+        new mapboxgl.Popup({ offset: 25 }) // add popups
+          .setHTML(
+            '<h3>' +
+            'Sandvika, Brensholmen (Tromsø) - TEN ON WHEELS!' +
+            '</h3><p>' +
+            'Sandvika is a popular exit point and the most popular beach on Brensholmen' +
+            '</p>'
+            +
+            '<p><img src="firstActivity.jpg" style="width: 220px;"></p>'
+          )
+          .setMaxWidth(170)
+      )
+      .addTo(map);
+
+
+    // FERRY BETWEEN ISLANDS
+    var elm3 = document.createElement('div');
+    elm3.className = 'markerFerry';
+    var ferry = new mapboxgl.Marker(elm3).setLngLat([17.9679951, 69.5661958])
+      .setPopup(
+        new mapboxgl.Popup({ offset: 25 }) // add popups
+          .setHTML(
+            '<h3>' +
+            'FERRY BETWEEN THE ISLANDS' +
+            '</h3><p>' +
+            'Take the Ferry here!' +
+            '</p>'
+            +
+            '<p><img src="ferry.jpg" style="width: 220px;"></p>'
+          )
+          .setMaxWidth(170)
+      )
+      .addTo(map);
+
+    // Second hike
+    var elm4 = document.createElement('div');
+    elm4.className = 'markerHike2';
+    var hikeSecond = new mapboxgl.Marker(elm4).setLngLat([17.5850704, 69.5136566])
+      .setPopup(
+        new mapboxgl.Popup({ offset: 25 }) // add popups
+          .setHTML(
+            '<h3>' +
+            'Topptur tl Hesten og Stavelitippen i Fjordgård med videre muligheter' +
+            '</h3><p>' +
+            'Second hike starts here!' +
+            '</p>'
+            +
+            '<p><img src="Secondhike.JPG" style="width: 220px;"></p>'
+          )
+          .setMaxWidth(170)
+      )
+      .addTo(map);
+
+
+
+    // hotel
+    var elm5 = document.createElement('div');
+    elm5.className = 'markerHotel';
+    var hotel = new mapboxgl.Marker(elm5).setLngLat([17.1661568, 69.4174177])
+      .setPopup(
+        new mapboxgl.Popup({ offset: 25 }) // add popups
+          .setHTML(
+            '<h3>' +
+            'For Stay' +
+            '</h3><p>' +
+            'Hotel Hamn i Senja' +
+            '</p>'
+            +
+            '<p><button type="button" onclick="bookHotel()">Click Me!</button></p>'
+          )
+          .setMaxWidth(170)
+      )
+      .addTo(map);
+
+    function bookHotel() {
+      window.open(
+        "http://www.pukkatraves.com/", "_blank");
+    }
+
+
+
+
+
+    map.fitBounds([
+      [20.51349181866337, 70.03505335828146], // southwestern corner of the bounds
+      [15.362544773014832, 69.04878833789988] // northeastern corner of the bounds
+    ]);
+
+    var directions = new MapboxDirections({
+      accessToken: mapboxgl.accessToken
+    });
+
+    function startPointL() {
+      map.flyTo({
+        center: [
+          18.9602193,
+          69.6481466
+        ],
+        zoom: 15,
+        speed: 2,
+        essential: true // this animation is considered essential with respect to prefers-reduced-motion
+      });
+      // map.setBearing(-75);
+      // map.setPitch(75);
+      //map.setBearing(90);
+      //  / map.setPitch(-90);
+
+    }
+
+    function journeyStart() {
+      map.addControl(directions, 'top-left');
+      directions.setOrigin([18.9602193, 69.6481466]);
+      directions.setDestination([18.6253192, 69.6971024]);
+    }
+
+  </script>
+
+</body>
+<button type="button">Click Me!</button>
+
+</html>
