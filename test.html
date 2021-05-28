@@ -100,6 +100,8 @@
     href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
     type="text/css">
   <div id="map">
+    <p id="distance" style="position: relative; z-index: 10;">Pending</p>
+
     <button id="startPointL" onclick="startPointL()" type="button" class="button button1"
       style="z-index:5; position:absolute">Take me to Start
       Location!</button> </br> </br> </br> </br>
@@ -359,7 +361,7 @@
 
     function hotelStart() {
       document.getElementById('hotelStart').style.display = 'none';
-      directions.setOrigin([17.58565, 69.51406]);
+      directions.setOrigin([17.5850704, 69.5136566]);
       directions.setDestination([17.1661568, 69.4174177]);
     }
 
