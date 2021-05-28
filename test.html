@@ -104,8 +104,10 @@
       style="z-index:5; position:absolute">Take me to Start
       Location!</button> </br> </br> </br> </br>
     <button id="Start" onclick="journeyStart()" type="button" class="button button1"
-      style="z-index:5; position:absolute">Start the
-      Journey!</button>
+      style="display: none; z-index:5; position:absolute">Start the
+      Journey for POI!</button>
+    <button id="hikeStart" onclick="firstHikeStart()" type="button" class="button button1"
+      style="display: none; z-index:5; position:absolute">Take me to the first hike!</button>
   </div>
 
 
@@ -288,15 +290,47 @@
       //map.setBearing(90);
       //  / map.setPitch(-90);
 
+      document.getElementById('Start').style.display = 'block';
+      document.getElementById('startPointL').style.display = 'none';
     }
 
     function journeyStart() {
+      document.getElementById('hikeStart').style.display = 'block';
+      document.getElementById('Start').style.display = 'none';
       map.addControl(directions, 'top-left');
       var directionDiv = document.getElementsByClassName('directions-control directions-control-inputs')
       directionDiv[0].style.display = 'none'
       directions.setOrigin([18.9602193, 69.6481466]);
       directions.setDestination([18.6253192, 69.6971024]);
 
+    }
+
+    function firstHikeStart() {
+      document.getElementById('hikeStart').style.display = 'none';
+      //document.getElementById('startPointL').style.display = 'none';
+      map.removeControl(directions);
+      map.addControl(directions, 'top-left');
+      var directionDiv = document.getElementsByClassName('directions-control directions-control-inputs')
+      directionDiv[0].style.display = 'none'
+
+      /* var directions = new Directions({});
+      directions.on('route', () => {
+        try {
+          directions.mapState()
+        } catch (e) {
+          console.error(e);
+        }
+      }) */
+
+      /*  var directions = map.addControl(
+         new MapboxDirections({
+           accessToken: mapboxgl.accessToken
+         }),
+         'top-left'
+       ); */
+      debugger
+      directions.setOrigin([18.6253192, 69.6971024]);
+      directions.setDestination([18.0546663, 69.6042157]);
     }
 
   </script>
