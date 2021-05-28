@@ -108,6 +108,19 @@
       Journey for POI!</button>
     <button id="hikeStart" onclick="firstHikeStart()" type="button" class="button button1"
       style="display: none; z-index:5; position:absolute">Take me to the first hike!</button>
+
+    <button id="ferryStart" onclick="ferryStart()" type="button" class="button button1"
+      style="display: none; z-index:5; position:absolute">Done with the trek? lets go for ferry!</button>
+
+    <button id="secHikeStart" onclick="secondHikeStart()" type="button" class="button button1"
+      style="display: none; z-index:5; position:absolute">Lets go to the next trek!</button>
+
+    <button id="secHike" onclick="secondHike()" type="button" class="button button1"
+      style="display: none; z-index:5; position:absolute">Lets Hike, press the end button once finished!</button>
+
+    <button id="hotelStart" onclick="hotelStart()" type="button" class="button button1"
+      style="display: none; z-index:5; position:absolute">End with the trek, take me to the hotel!</button>
+
   </div>
 
 
@@ -297,7 +310,7 @@
     function journeyStart() {
       document.getElementById('hikeStart').style.display = 'block';
       document.getElementById('Start').style.display = 'none';
-      map.addControl(directions, 'top-left');
+      map.addControl(directions, 'bottom-left');
       var directionDiv = document.getElementsByClassName('directions-control directions-control-inputs')
       directionDiv[0].style.display = 'none'
       directions.setOrigin([18.9602193, 69.6481466]);
@@ -307,30 +320,47 @@
 
     function firstHikeStart() {
       document.getElementById('hikeStart').style.display = 'none';
-      //document.getElementById('startPointL').style.display = 'none';
-     // map.removeControl(directions);
-      //map.addControl(directions, 'top-left');
-     // var directionDiv = document.getElementsByClassName('directions-control directions-control-inputs')
-     // directionDiv[0].style.display = 'none'
+      document.getElementById('ferryStart').style.display = 'block';
 
-      /* var directions = new Directions({});
-      directions.on('route', () => {
-        try {
-          directions.mapState()
-        } catch (e) {
-          console.error(e);
-        }
-      }) */
-
-      /*  var directions = map.addControl(
-         new MapboxDirections({
-           accessToken: mapboxgl.accessToken
-         }),
-         'top-left'
-       ); */
       debugger
       directions.setOrigin([18.6253192, 69.6971024]);
       directions.setDestination([18.0546663, 69.6042157]);
+    }
+
+    function ferryStart() {
+      document.getElementById('ferryStart').style.display = 'none';
+      document.getElementById('secHikeStart').style.display = 'block';
+      debugger
+      directions.setOrigin([18.0546663, 69.6042157]);
+      directions.setDestination([18.04393, 69.56655]);
+    }
+
+    function secondHikeStart() {
+      document.getElementById('secHikeStart').style.display = 'none';
+      document.getElementById('secHike').style.display = 'block';
+      debugger
+      directions.setOrigin([17.9679951, 69.5661958]);
+      directions.setDestination([17.5850704, 69.5136566]);
+    }
+
+    function secondHike() {
+      document.getElementById('secHike').style.display = 'none';
+      document.getElementById('hotelStart').style.display = 'block';
+      directions.removeRoutes();
+      map.flyTo({
+        center: [
+          17.62331, 69.50833
+        ],
+        zoom: 15,
+        speed: 2,
+        essential: true // this animation is considered essential with respect to prefers-reduced-motion
+      });
+    }
+
+    function hotelStart() {
+      document.getElementById('hotelStart').style.display = 'none';
+      directions.setOrigin([17.58565, 69.51406]);
+      directions.setDestination([17.1661568, 69.4174177]);
     }
 
   </script>
