@@ -7,10 +7,13 @@
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
   <style>
     body {
       margin: 0;
       padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     #map {
@@ -90,6 +93,62 @@
     .button1 {
       padding: 10px 24px;
     }
+
+    .button2 {
+      padding: 10px 24px;
+      top: 135px;
+      left: 2px;
+    }
+
+    /* The Modal (background) */
+    .modal {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      /* Stay in place */
+      z-index: 1;
+      /* Sit on top */
+      padding-top: 100px;
+      /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%;
+      /* Full width */
+      height: 100%;
+      /* Full height */
+      overflow: auto;
+      /* Enable scroll if needed */
+      background-color: rgb(0, 0, 0);
+      /* Fallback color */
+      background-color: rgba(0, 0, 0, 0.4);
+      /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      width: 700px;
+      left: 318px;
+    }
+
+    /* The Close Button */
+    .close {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -100,7 +159,6 @@
     href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
     type="text/css">
   <div id="map">
-    <p id="distance" style="position: relative; z-index: 10;">Pending</p>
 
     <button id="startPointL" onclick="startPointL()" type="button" class="button button1"
       style="z-index:5; position:absolute">Take me to Start
@@ -123,10 +181,35 @@
     <button id="hotelStart" onclick="hotelStart()" type="button" class="button button1"
       style="display: none; z-index:5; position:absolute">End with the trek, take me to the hotel!</button>
 
+    <button id="pendingDist" onclick="pendingDist()" type="button" class="button button2"
+      style="display: none; z-index:5; position:absolute">Refresh!</button>
+
+    <button id="myBtn" onclick="report()" style="display: block; z-index:5; position:absolute" type="button"
+      class="button button2">Generate Report!</button>
+
+
+    <div id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content" style="display: block; z-index:5; position:absolute">
+        <span class="close">&times;</span>
+        <p id="totalDistance">Some text in the Modal..</p>
+        <p id="totalDuration">Some text in the Modal..</p>
+        <p id="timeToReach">Some text in the Modal..</p>
+        <p id="timeToPOI">Some text in the Modal..</p>
+        <p id="timeToFirstHike">Some text in the Modal..</p>
+        <p id="timeToFerry">Some text in the Modal..</p>
+        <p id="timeToSecHike">Some text in the Modal..</p>
+        <p id="timeToHotel">Some text in the Modal..</p>
+
+      </div>
+
+    </div>
   </div>
 
 
   <script>
+    var globalLat, globalLong;
     mapboxgl.accessToken = 'pk.eyJ1IjoicHVra2F0cmF2ZWxzIiwiYSI6ImNpdHk3Njd2bTAwNDIybms5MGVqdWN2ZTgifQ.Os31P4FPO8DMl7QTWMEa3A';
     var map = new mapboxgl.Map({
       container: 'map',
@@ -141,6 +224,8 @@
     }));
 
     map.addControl(new mapboxgl.NavigationControl());
+
+
 
 
     var el = document.createElement('div');
@@ -312,37 +397,43 @@
     function journeyStart() {
       document.getElementById('hikeStart').style.display = 'block';
       document.getElementById('Start').style.display = 'none';
+      document.getElementById('myBtn').style.display = 'none';
       map.addControl(directions, 'bottom-left');
       var directionDiv = document.getElementsByClassName('directions-control directions-control-inputs')
       directionDiv[0].style.display = 'none'
       directions.setOrigin([18.9602193, 69.6481466]);
       directions.setDestination([18.6253192, 69.6971024]);
+      document.getElementById('pendingDist').style.display = 'block';
+      globalLat = 18.6253192;
+      globalLong = 69.6971024;
 
     }
 
     function firstHikeStart() {
       document.getElementById('hikeStart').style.display = 'none';
       document.getElementById('ferryStart').style.display = 'block';
-
-      debugger
       directions.setOrigin([18.6253192, 69.6971024]);
       directions.setDestination([18.0546663, 69.6042157]);
+      globalLat = 18.0546663;
+      globalLong = 69.6042157;
     }
 
     function ferryStart() {
       document.getElementById('ferryStart').style.display = 'none';
       document.getElementById('secHikeStart').style.display = 'block';
-      debugger
       directions.setOrigin([18.0546663, 69.6042157]);
       directions.setDestination([18.04393, 69.56655]);
+      globalLat = 18.04393;
+      globalLong = 69.56655;
     }
 
     function secondHikeStart() {
       document.getElementById('secHikeStart').style.display = 'none';
       document.getElementById('secHike').style.display = 'block';
-      debugger
       directions.setOrigin([17.9679951, 69.5661958]);
       directions.setDestination([17.5850704, 69.5136566]);
+      globalLat = 17.5850704;
+      globalLong = 69.5136566;
     }
 
     function secondHike() {
@@ -363,11 +454,173 @@
       document.getElementById('hotelStart').style.display = 'none';
       directions.setOrigin([17.5850704, 69.5136566]);
       directions.setDestination([17.1661568, 69.4174177]);
+      globalLat = 17.1661568;
+      globalLong = 69.4174177;
     }
+
+    function pendingDist() {
+      var lat, Long;
+      navigator.geolocation.getCurrentPosition(position => {
+        lat = position.coords.latitude;
+        long = position.coords.longitude;
+
+        $.ajax({
+          url: "https://api.mapbox.com/directions/v5/mapbox/driving/" + lat + "," + long + ";" + globalLat + "," + globalLong + "?steps=false&geometries=geojson&access_token=pk.eyJ1IjoicHVra2F0cmF2ZWxzIiwiYSI6ImNpdHk3Njd2bTAwNDIybms5MGVqdWN2ZTgifQ.Os31P4FPO8DMl7QTWMEa3A", success: function (result) {
+            var distancePending = result.routes[0].distance * 0.000621371;
+
+            document.getElementById('pendingDist').innerHTML = 'The total distance pending is ' + distancePending.toFixed(2) + ' Miles';
+
+            if (distancePending < 1) {
+              alert('You are about to reach');
+            }
+          }
+        });
+      });
+
+    }
+    var total = 0;
+    var totalTime = 0;
+    function report() {
+
+
+      //To POI
+
+      $.ajax({
+        url: "https://api.mapbox.com/directions/v5/mapbox/driving/18.9602193, 69.6481466;18.6253192, 69.6971024?steps=true&geometries=geojson&access_token=pk.eyJ1IjoicHVra2F0cmF2ZWxzIiwiYSI6ImNpdHk3Njd2bTAwNDIybms5MGVqdWN2ZTgifQ.Os31P4FPO8DMl7QTWMEa3A", success: function (result) {
+
+          var distance = result.routes[0].distance * 0.000621371;
+          total = total + distance;
+          totalTime = totalTime + result.routes[0].duration;
+
+          var toreachPOI = new Date();
+          toreachPOI.setMinutes(totalTime * 0.0166667);
+          document.getElementById("timeToPOI").innerHTML = 'You will reach POI by ' + toreachPOI;
+
+          //wait time for POI 
+          totalTime = totalTime + 900;
+
+          //To 1st Hike
+          $.ajax({
+            url: "https://api.mapbox.com/directions/v5/mapbox/driving/18.6253192, 69.6971024;18.0546663, 69.6042157?steps=true&geometries=geojson&access_token=pk.eyJ1IjoicHVra2F0cmF2ZWxzIiwiYSI6ImNpdHk3Njd2bTAwNDIybms5MGVqdWN2ZTgifQ.Os31P4FPO8DMl7QTWMEa3A", success: function (result) {
+
+              var distance = result.routes[0].distance * 0.000621371;
+              total = total + distance;
+              totalTime = totalTime + result.routes[0].duration;
+
+
+
+              var toFirstHike = new Date();
+              toFirstHike.setMinutes(totalTime * 0.0166667);
+              document.getElementById("timeToFirstHike").innerHTML = 'You will reach for First Hike by ' + toFirstHike + ' This includes wait time of 15 mins at POI';
+
+              //wait time for First Hike to complete 
+              totalTime = totalTime + 900;
+
+              //To Ferry 
+
+              $.ajax({
+                url: "https://api.mapbox.com/directions/v5/mapbox/driving/18.0546663, 69.6042157;18.04393, 69.56655?steps=true&geometries=geojson&access_token=pk.eyJ1IjoicHVra2F0cmF2ZWxzIiwiYSI6ImNpdHk3Njd2bTAwNDIybms5MGVqdWN2ZTgifQ.Os31P4FPO8DMl7QTWMEa3A", success: function (result) {
+
+                  var distance = result.routes[0].distance * 0.000621371;
+                  total = total + distance;
+                  totalTime = totalTime + result.routes[0].duration;
+
+                  var toReachFerry = new Date();
+                  toReachFerry.setMinutes(totalTime * 0.0166667);
+                  document.getElementById("timeToFerry").innerHTML = 'You will reach for Ferry by ' + toReachFerry + ' This includes hike time of 15 mins';
+
+
+
+                  //To Second Hike
+
+                  $.ajax({
+                    url: "https://api.mapbox.com/directions/v5/mapbox/driving/17.9679951, 69.5661958;17.5850704, 69.5136566?steps=true&geometries=geojson&access_token=pk.eyJ1IjoicHVra2F0cmF2ZWxzIiwiYSI6ImNpdHk3Njd2bTAwNDIybms5MGVqdWN2ZTgifQ.Os31P4FPO8DMl7QTWMEa3A", success: function (result) {
+
+                      var distance = result.routes[0].distance * 0.000621371;
+                      total = total + distance;
+                      totalTime = totalTime + result.routes[0].duration;
+
+                      var toReachSecHike = new Date();
+                      toReachSecHike.setMinutes(totalTime * 0.0166667);
+                      document.getElementById("timeToSecHike").innerHTML = 'You will reach for Second Hike by ' + toReachSecHike;
+
+
+                      //Wait time for secondhike
+                      totalTime = totalTime + 1;
+
+                      //To Hotel
+
+                      $.ajax({
+                        url: "https://api.mapbox.com/directions/v5/mapbox/driving/17.5850704, 69.5136566;17.1661568, 69.4174177?steps=true&geometries=geojson&access_token=pk.eyJ1IjoicHVra2F0cmF2ZWxzIiwiYSI6ImNpdHk3Njd2bTAwNDIybms5MGVqdWN2ZTgifQ.Os31P4FPO8DMl7QTWMEa3A", success: function (result) {
+                          debugger
+                          var distance = result.routes[0].distance * 0.000621371;
+                          total = total + distance;
+                          totalTime = totalTime + result.routes[0].duration;
+
+                          var toReachHot = new Date();
+                          toReachHot.setMinutes(totalTime * 0.0166667);
+                          document.getElementById("timeToHotel").innerHTML = 'You will reach at Hotel by ' + toReachHot + ' This includes hike time of 60 mins';
+
+
+
+                          totalTime = totalTime * 0.000277778;
+
+
+                          document.getElementById('totalDistance').innerHTML = 'Total Distance from your Start Point to Destination is ' + total.toFixed(2) + ' Miles';
+                          document.getElementById('totalDuration').innerHTML = 'Total Duration from your Start Point to Destination is ' + totalTime.toFixed(2) + ' Hours'
+
+                          //timeToReach
+
+                          var d = new Date();
+                          d.setMinutes(totalTime * 60);
+                          document.getElementById("timeToReach").innerHTML = 'You will reach your destination by ' + d;
+
+                          var current = new Date();
+                          current.toLocaleTimeString();
+
+                          // Get the modal
+                          var modal = document.getElementById("myModal");
+
+                          // Get the button that opens the modal
+                          var btn = document.getElementById("myBtn");
+
+                          // Get the <span> element that closes the modal
+                          var span = document.getElementsByClassName("close")[0];
+
+                          // When the user clicks the button, open the modal 
+                          // btn.onclick = function () {
+                          modal.style.display = "block";
+                          // }
+
+                          // When the user clicks on <span> (x), close the modal
+                          span.onclick = function () {
+                            modal.style.display = "none";
+                          }
+
+                          // When the user clicks anywhere outside of the modal, close it
+                          window.onclick = function (event) {
+                            if (event.target == modal) {
+                              modal.style.display = "none";
+                            }
+                          }
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+
+        }
+      });
+
+    }
+
 
   </script>
 
 </body>
-<button type="button">Click Me!</button>
+
 
 </html>
