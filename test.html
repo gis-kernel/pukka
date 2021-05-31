@@ -199,6 +199,7 @@
         <p id="timeToPOI">Some text in the Modal..</p>
         <p id="timeToFirstHike">Some text in the Modal..</p>
         <p id="timeToFerry">Some text in the Modal..</p>
+        <p id="waitTimeFerry">Some text in the Modal..</p>
         <p id="timeToSecHike">Some text in the Modal..</p>
         <p id="timeToHotel">Some text in the Modal..</p>
 
@@ -530,6 +531,28 @@
                   document.getElementById("timeToFerry").innerHTML = 'You will reach for Ferry by ' + toReachFerry + ' This includes hike time of 15 mins';
 
 
+                  ///ferry condition 
+
+                  var times = [08, 10, 15, 17, 19, 20]
+
+
+                  for (i = 0; i < times.length; i++) {
+                    debugger
+                    var hours = toReachFerry.getHours();
+
+                    if (hours < times[i]) {
+
+                      var diff = times[i] - hours;
+                      document.getElementById("waitTimeFerry").innerHTML = 'You have waiting time of ' + diff + ' hours to catch the next Ferry!';
+                      totalTime = totalTime + (diff * 3600);
+                      break;
+                    } else if (hours > times[i] || hours == times[i]) {
+
+                    } else {
+                      alert('No ferry available for today.');
+                      break;
+                    }
+                  }
 
                   //To Second Hike
 
@@ -552,7 +575,7 @@
 
                       $.ajax({
                         url: "https://api.mapbox.com/directions/v5/mapbox/driving/17.5850704, 69.5136566;17.1661568, 69.4174177?steps=true&geometries=geojson&access_token=pk.eyJ1IjoicHVra2F0cmF2ZWxzIiwiYSI6ImNpdHk3Njd2bTAwNDIybms5MGVqdWN2ZTgifQ.Os31P4FPO8DMl7QTWMEa3A", success: function (result) {
-                          debugger
+
                           var distance = result.routes[0].distance * 0.000621371;
                           total = total + distance;
                           totalTime = totalTime + result.routes[0].duration;
